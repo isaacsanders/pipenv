@@ -24,7 +24,7 @@ from .utils import (convert_deps_from_pip, convert_deps_to_pip, is_required_vers
     proper_case, pep426_name, split_vcs, recase_file)
 from .__version__ import __version__
 from . import pep508checker
-from .environments import PIPENV_COLORBLIND, PIPENV_NOSPIN, PIPENV_SHELL_COMPAT, PIPENV_VENV_IN_PROJECT
+from .environments import PIPENV_COLORBLIND, PIPENV_NOSPIN, PIPENV_SHELL_COMPAT, PIPENV_VENV_IN_PROJECT, PIPENV_VIRTUALENV_EXECUTABLE, PIPENV_PEW_EXECUTABLE
 
 # Backport required for earlier versions of Python.
 if sys.version_info < (3, 3):
@@ -336,10 +336,10 @@ def do_create_virtualenv(three=None, python=None):
 
     # The user wants the virtualenv in the project.
     if PIPENV_VENV_IN_PROJECT:
-        cmd = ['virtualenv', project.virtualenv_location, '--prompt=({0})'.format(project.name)]
+        cmd = [PIPENV_VIRTUALENV_EXECUTABLE, project.virtualenv_location, '--prompt=({0})'.format(project.name)]
     else:
         # Default: use pew.
-        cmd = ['pew', 'new', project.virtualenv_name, '-d']
+        cmd = [PIPENV_PEW_EXECUTABLE, 'new', project.virtualenv_name, '-d']
 
     # Pass a Python version to virtualenv, if needed.
     if python:
@@ -917,7 +917,7 @@ def shell(three=None, python=False, compat=False, shell_args=None):
 
     # Standard (properly configured shell) mode:
     else:
-        cmd = 'pew'
+        cmd = PIPENV_PEW_EXECUTABLE
         args = ["workon", project.virtualenv_name]
 
     # Grab current terminal dimensions to replace the hardcoded default
